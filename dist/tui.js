@@ -623,9 +623,9 @@ function SidebarPanelContent(props) {
                     " ",
                     "(",
                     isRunning() ? "Working" : "Idle",
-                    ", C=",
-                    session().counter,
-                    ")"
+                    ", ",
+                    subagentNodes().length,
+                    " subagents)"
                   ]
                 }, undefined, true, undefined, this)
               }, undefined, false, undefined, this)
@@ -760,132 +760,133 @@ function SidebarPanelContent(props) {
                   }, undefined, false, undefined, this)
                 }, undefined, false, undefined, this)
               ]
-            }, undefined, true, undefined, this)
-          ]
-        }, undefined, true, undefined, this)
-      }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsxDEV4("box", {
-        marginTop: 1,
-        children: [
-          /* @__PURE__ */ jsxDEV4("box", {
-            flexDirection: "row",
-            gap: 1,
-            onMouseDown: () => props.prefsStore.toggleSubagents(),
-            children: [
-              /* @__PURE__ */ jsxDEV4("text", {
-                fg: theme.text.default,
-                children: isSubagentsOpen() ? "▼" : "▶"
-              }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsxDEV4("text", {
-                fg: theme.text.default,
-                children: [
-                  /* @__PURE__ */ jsxDEV4("b", {
-                    children: "Subagents"
-                  }, undefined, false, undefined, this),
-                  /* @__PURE__ */ jsxDEV4("span", {
-                    style: { fg: theme.text.subdued },
-                    children: [
-                      " ",
-                      "(",
-                      activeSubagents().length,
-                      " running",
-                      subagentNodes().length > 0 ? `, ${subagentNodes().length} total` : "",
-                      ")"
-                    ]
-                  }, undefined, true, undefined, this)
-                ]
-              }, undefined, true, undefined, this)
-            ]
-          }, undefined, true, undefined, this),
-          /* @__PURE__ */ jsxDEV4(Show2, {
-            when: isSubagentsOpen(),
-            children: /* @__PURE__ */ jsxDEV4("box", {
-              flexDirection: "column",
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsxDEV4("box", {
+              marginTop: 1,
+              paddingLeft: 1,
               children: [
-                /* @__PURE__ */ jsxDEV4(Show2, {
-                  when: subagentNodes().length > 0,
-                  fallback: /* @__PURE__ */ jsxDEV4("box", {
-                    paddingLeft: 1,
-                    children: /* @__PURE__ */ jsxDEV4("text", {
-                      fg: theme.text.subdued,
-                      children: /* @__PURE__ */ jsxDEV4("i", {
-                        children: "No subagents spawned yet"
-                      }, undefined, false, undefined, this)
-                    }, undefined, false, undefined, this)
-                  }, undefined, false, undefined, this),
-                  children: /* @__PURE__ */ jsxDEV4(For2, {
-                    each: subagentNodes(),
-                    children: (node) => {
-                      const subStatus = () => props.context.data.session.status(node.session.id);
-                      const isSubRunning = () => subStatus() === "running";
-                      const title = () => {
-                        const agentName = node.session.agent ?? node.session.title ?? node.session.id.slice(0, 8);
-                        return `${node.prefix}${agentName}`;
-                      };
-                      return /* @__PURE__ */ jsxDEV4("box", {
-                        flexDirection: "row",
-                        gap: 1,
-                        minWidth: 0,
-                        onMouseUp: () => {
-                          props.context.ui.router.navigate({ type: "session", sessionID: node.session.id });
-                        },
-                        children: [
-                          /* @__PURE__ */ jsxDEV4("text", {
-                            flexShrink: 0,
-                            style: {
-                              fg: isSubRunning() ? theme.text.feedback.warning.default : theme.text.feedback.success.default
-                            },
-                            children: "•"
-                          }, undefined, false, undefined, this),
-                          /* @__PURE__ */ jsxDEV4("text", {
-                            fg: theme.text.default,
-                            wrapMode: "none",
-                            truncate: true,
-                            flexGrow: 1,
-                            flexShrink: 1,
-                            minWidth: 0,
-                            children: /* @__PURE__ */ jsxDEV4("b", {
-                              children: title()
-                            }, undefined, false, undefined, this)
-                          }, undefined, false, undefined, this),
-                          /* @__PURE__ */ jsxDEV4("text", {
-                            fg: isSubRunning() ? theme.text.feedback.warning.default : theme.text.subdued,
-                            wrapMode: "none",
-                            flexShrink: 0,
-                            children: isSubRunning() ? "Working" : node.session.outcome ?? "Done"
-                          }, undefined, false, undefined, this)
-                        ]
-                      }, undefined, true, undefined, this);
-                    }
-                  }, undefined, false, undefined, this)
-                }, undefined, false, undefined, this),
-                /* @__PURE__ */ jsxDEV4(Show2, {
-                  when: availableSubagents().length > 0,
-                  children: /* @__PURE__ */ jsxDEV4("box", {
-                    flexDirection: "row",
-                    gap: 1,
-                    paddingLeft: 1,
-                    marginTop: 1,
-                    children: /* @__PURE__ */ jsxDEV4("text", {
-                      fg: theme.text.subdued,
+                /* @__PURE__ */ jsxDEV4("box", {
+                  flexDirection: "row",
+                  gap: 1,
+                  onMouseDown: () => props.prefsStore.toggleSubagents(),
+                  children: [
+                    /* @__PURE__ */ jsxDEV4("text", {
+                      fg: theme.text.default,
+                      children: isSubagentsOpen() ? "▼" : "▶"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsxDEV4("text", {
+                      fg: theme.text.default,
                       children: [
-                        "Catalog: ",
+                        /* @__PURE__ */ jsxDEV4("b", {
+                          children: "Subagents"
+                        }, undefined, false, undefined, this),
                         /* @__PURE__ */ jsxDEV4("span", {
-                          style: { fg: theme.text.feedback.info.default },
+                          style: { fg: theme.text.subdued },
                           children: [
-                            availableSubagents().length,
-                            " roles available"
+                            " ",
+                            "(",
+                            activeSubagents().length,
+                            " running",
+                            subagentNodes().length > 0 ? `, ${subagentNodes().length} total` : "",
+                            ")"
                           ]
                         }, undefined, true, undefined, this)
                       ]
                     }, undefined, true, undefined, this)
-                  }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsxDEV4(Show2, {
+                  when: isSubagentsOpen(),
+                  children: /* @__PURE__ */ jsxDEV4("box", {
+                    flexDirection: "column",
+                    children: [
+                      /* @__PURE__ */ jsxDEV4(Show2, {
+                        when: subagentNodes().length > 0,
+                        fallback: /* @__PURE__ */ jsxDEV4("box", {
+                          paddingLeft: 1,
+                          children: /* @__PURE__ */ jsxDEV4("text", {
+                            fg: theme.text.subdued,
+                            children: /* @__PURE__ */ jsxDEV4("i", {
+                              children: "No subagents spawned yet"
+                            }, undefined, false, undefined, this)
+                          }, undefined, false, undefined, this)
+                        }, undefined, false, undefined, this),
+                        children: /* @__PURE__ */ jsxDEV4(For2, {
+                          each: subagentNodes(),
+                          children: (node) => {
+                            const subStatus = () => props.context.data.session.status(node.session.id);
+                            const isSubRunning = () => subStatus() === "running";
+                            const title = () => {
+                              const agentName = node.session.agent ?? node.session.title ?? node.session.id.slice(0, 8);
+                              return `${node.prefix}${agentName}`;
+                            };
+                            return /* @__PURE__ */ jsxDEV4("box", {
+                              flexDirection: "row",
+                              gap: 1,
+                              minWidth: 0,
+                              onMouseUp: () => {
+                                props.context.ui.router.navigate({ type: "session", sessionID: node.session.id });
+                              },
+                              children: [
+                                /* @__PURE__ */ jsxDEV4("text", {
+                                  flexShrink: 0,
+                                  style: {
+                                    fg: isSubRunning() ? theme.text.feedback.warning.default : theme.text.feedback.success.default
+                                  },
+                                  children: "•"
+                                }, undefined, false, undefined, this),
+                                /* @__PURE__ */ jsxDEV4("text", {
+                                  fg: theme.text.default,
+                                  wrapMode: "none",
+                                  truncate: true,
+                                  flexGrow: 1,
+                                  flexShrink: 1,
+                                  minWidth: 0,
+                                  children: /* @__PURE__ */ jsxDEV4("b", {
+                                    children: title()
+                                  }, undefined, false, undefined, this)
+                                }, undefined, false, undefined, this),
+                                /* @__PURE__ */ jsxDEV4("text", {
+                                  fg: isSubRunning() ? theme.text.feedback.warning.default : theme.text.subdued,
+                                  wrapMode: "none",
+                                  flexShrink: 0,
+                                  children: isSubRunning() ? "Working" : node.session.outcome ?? "Done"
+                                }, undefined, false, undefined, this)
+                              ]
+                            }, undefined, true, undefined, this);
+                          }
+                        }, undefined, false, undefined, this)
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsxDEV4(Show2, {
+                        when: availableSubagents().length > 0,
+                        children: /* @__PURE__ */ jsxDEV4("box", {
+                          flexDirection: "row",
+                          gap: 1,
+                          paddingLeft: 1,
+                          marginTop: 1,
+                          children: /* @__PURE__ */ jsxDEV4("text", {
+                            fg: theme.text.subdued,
+                            children: [
+                              "Catalog: ",
+                              /* @__PURE__ */ jsxDEV4("span", {
+                                style: { fg: theme.text.feedback.info.default },
+                                children: [
+                                  availableSubagents().length,
+                                  " roles available"
+                                ]
+                              }, undefined, true, undefined, this)
+                            ]
+                          }, undefined, true, undefined, this)
+                        }, undefined, false, undefined, this)
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
                 }, undefined, false, undefined, this)
               ]
             }, undefined, true, undefined, this)
-          }, undefined, false, undefined, this)
-        ]
-      }, undefined, true, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      }, undefined, false, undefined, this)
     ]
   }, undefined, true, undefined, this);
 }

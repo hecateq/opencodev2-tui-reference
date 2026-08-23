@@ -17,7 +17,7 @@ export interface SidebarPanelProps {
 function SidebarPanelContent(props: SidebarPanelProps) {
   const theme = props.context.theme
 
-  // Active Session info
+  // Active Session metrics & storage
   const session = createMemo(() => {
     return (
       props.sessionStore.store.activeSessions[props.sessionID] ??
@@ -61,7 +61,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
     return formatCost(rawCost)
   })
 
-  // Persistent collapsible state (defaults to true)
+  // Persistent collapsible states
   const isHecateqOpen = createMemo(() => props.prefsStore.prefs.hecateqLabOpen ?? true)
   const isSubagentsOpen = createMemo(() => props.prefsStore.prefs.subagentsOpen ?? true)
 
@@ -71,7 +71,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
 
   return (
     <box marginTop={1}>
-      {/* Section 1: Hecateq Lab (Collapsible like MCP) */}
+      {/* Top-Level Header: Hecateq Lab (Collapsible like MCP) */}
       <box
         flexDirection="row"
         gap={1}
@@ -83,13 +83,13 @@ function SidebarPanelContent(props: SidebarPanelProps) {
           <Show when={!isHecateqOpen()}>
             <span style={{ fg: theme.text.subdued }}>
               {" "}
-              ({isRunning() ? "Working" : "Idle"}, C={session().counter})
+              ({isRunning() ? "Working" : "Idle"}, {subagentNodes().length} subagents)
             </span>
           </Show>
         </text>
       </box>
 
-      {/* Expanded Hecateq Lab Content */}
+      {/* Expanded Hecateq Lab Section */}
       <Show when={isHecateqOpen()}>
         <box flexDirection="column">
           {/* Status Row */}
@@ -166,92 +166,92 @@ function SidebarPanelContent(props: SidebarPanelProps) {
               <i>Open Dashboard...</i>
             </text>
           </box>
-        </box>
-      </Show>
 
-      {/* Section 2: Subagents (Collapsible like MCP) */}
-      <box marginTop={1}>
-        <box
-          flexDirection="row"
-          gap={1}
-          onMouseDown={() => props.prefsStore.toggleSubagents()}
-        >
-          <text fg={theme.text.default}>{isSubagentsOpen() ? "▼" : "▶"}</text>
-          <text fg={theme.text.default}>
-            <b>Subagents</b>
-            <span style={{ fg: theme.text.subdued }}>
-              {" "}
-              ({activeSubagents().length} running{subagentNodes().length > 0 ? `, ${subagentNodes().length} total` : ""})
-            </span>
-          </text>
-        </box>
-
-        {/* Expanded Subagents Content */}
-        <Show when={isSubagentsOpen()}>
-          <box flexDirection="column">
-            <Show
-              when={subagentNodes().length > 0}
-              fallback={
-                <box paddingLeft={1}>
-                  <text fg={theme.text.subdued}>
-                    <i>No subagents spawned yet</i>
-                  </text>
-                </box>
-              }
+          {/* Nested Subagents Section (Directly under Hecateq Lab) */}
+          <box marginTop={1} paddingLeft={1}>
+            <box
+              flexDirection="row"
+              gap={1}
+              onMouseDown={() => props.prefsStore.toggleSubagents()}
             >
-              <For each={subagentNodes()}>
-                {(node) => {
-                  const subStatus = () => props.context.data.session.status(node.session.id)
-                  const isSubRunning = () => subStatus() === "running"
-                  const title = () => {
-                    const agentName = node.session.agent ?? node.session.title ?? node.session.id.slice(0, 8)
-                    return `${node.prefix}${agentName}`
-                  }
+              <text fg={theme.text.default}>{isSubagentsOpen() ? "▼" : "▶"}</text>
+              <text fg={theme.text.default}>
+                <b>Subagents</b>
+                <span style={{ fg: theme.text.subdued }}>
+                  {" "}
+                  ({activeSubagents().length} running{subagentNodes().length > 0 ? `, ${subagentNodes().length} total` : ""})
+                </span>
+              </text>
+            </box>
 
-                  return (
-                    <box
-                      flexDirection="row"
-                      gap={1}
-                      minWidth={0}
-                      onMouseUp={() => {
-                        props.context.ui.router.navigate({ type: "session", sessionID: node.session.id })
-                      }}
-                    >
-                      <text
-                        flexShrink={0}
-                        style={{
-                          fg: isSubRunning() ? theme.text.feedback.warning.default : theme.text.feedback.success.default,
-                        }}
-                      >
-                        •
-                      </text>
-                      <text fg={theme.text.default} wrapMode="none" truncate flexGrow={1} flexShrink={1} minWidth={0}>
-                        <b>{title()}</b>
-                      </text>
-                      <text
-                        fg={isSubRunning() ? theme.text.feedback.warning.default : theme.text.subdued}
-                        wrapMode="none"
-                        flexShrink={0}
-                      >
-                        {isSubRunning() ? "Working" : (node.session.outcome ?? "Done")}
+            {/* Expanded Subagents Content */}
+            <Show when={isSubagentsOpen()}>
+              <box flexDirection="column">
+                <Show
+                  when={subagentNodes().length > 0}
+                  fallback={
+                    <box paddingLeft={1}>
+                      <text fg={theme.text.subdued}>
+                        <i>No subagents spawned yet</i>
                       </text>
                     </box>
-                  )
-                }}
-              </For>
-            </Show>
+                  }
+                >
+                  <For each={subagentNodes()}>
+                    {(node) => {
+                      const subStatus = () => props.context.data.session.status(node.session.id)
+                      const isSubRunning = () => subStatus() === "running"
+                      const title = () => {
+                        const agentName = node.session.agent ?? node.session.title ?? node.session.id.slice(0, 8)
+                        return `${node.prefix}${agentName}`
+                      }
 
-            {/* Compact Available Roles Summary */}
-            <Show when={availableSubagents().length > 0}>
-              <box flexDirection="row" gap={1} paddingLeft={1} marginTop={1}>
-                <text fg={theme.text.subdued}>
-                  Catalog: <span style={{ fg: theme.text.feedback.info.default }}>{availableSubagents().length} roles available</span>
-                </text>
+                      return (
+                        <box
+                          flexDirection="row"
+                          gap={1}
+                          minWidth={0}
+                          onMouseUp={() => {
+                            props.context.ui.router.navigate({ type: "session", sessionID: node.session.id })
+                          }}
+                        >
+                          <text
+                            flexShrink={0}
+                            style={{
+                              fg: isSubRunning() ? theme.text.feedback.warning.default : theme.text.feedback.success.default,
+                            }}
+                          >
+                            •
+                          </text>
+                          <text fg={theme.text.default} wrapMode="none" truncate flexGrow={1} flexShrink={1} minWidth={0}>
+                            <b>{title()}</b>
+                          </text>
+                          <text
+                            fg={isSubRunning() ? theme.text.feedback.warning.default : theme.text.subdued}
+                            wrapMode="none"
+                            flexShrink={0}
+                          >
+                            {isSubRunning() ? "Working" : (node.session.outcome ?? "Done")}
+                          </text>
+                        </box>
+                      )
+                    }}
+                  </For>
+                </Show>
+
+                {/* Compact Available Roles Summary */}
+                <Show when={availableSubagents().length > 0}>
+                  <box flexDirection="row" gap={1} paddingLeft={1} marginTop={1}>
+                    <text fg={theme.text.subdued}>
+                      Catalog: <span style={{ fg: theme.text.feedback.info.default }}>{availableSubagents().length} roles available</span>
+                    </text>
+                  </box>
+                </Show>
               </box>
             </Show>
           </box>
-        </Show>
-      </box>
+        </box>
+      </Show>
     </box>
   )
 }
