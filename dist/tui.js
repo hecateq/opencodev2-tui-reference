@@ -568,6 +568,16 @@ function SidebarPanelContent(props) {
     return props.context.data.session.status(props.sessionID);
   });
   const isRunning = createMemo2(() => sessionStatus() === "running");
+  const sessionMessages = createMemo2(() => {
+    if (!props.sessionID)
+      return [];
+    return props.context.data.session.message.list(props.sessionID) ?? [];
+  });
+  const promptCount = createMemo2(() => {
+    const msgs = sessionMessages();
+    const userMsgs = msgs.filter((m) => m.type === "user" || m.type === "shell");
+    return userMsgs.length;
+  });
   const sessionCost = createMemo2(() => {
     if (!props.sessionID)
       return;
@@ -653,10 +663,9 @@ function SidebarPanelContent(props) {
               gap: 1,
               minWidth: 0,
               onMouseUp: () => {
-                props.sessionStore.incrementCounter(props.sessionID);
                 props.context.ui.toast.show({
                   title: "Session Prompts",
-                  message: `Prompts: ${session().counter}`,
+                  message: `Total Prompts in Session: ${promptCount()}`,
                   variant: "info",
                   duration: 2000
                 });
@@ -682,7 +691,7 @@ function SidebarPanelContent(props) {
                   fg: theme.text.feedback.info.default,
                   wrapMode: "none",
                   flexShrink: 0,
-                  children: session().counter
+                  children: promptCount()
                 }, undefined, false, undefined, this)
               ]
             }, undefined, true, undefined, this),
@@ -896,6 +905,16 @@ function PromptStatusBadgeContent(props) {
     return props.context.data.session.status(props.sessionID);
   });
   const isRunning = createMemo3(() => sessionStatus() === "running");
+  const sessionMessages = createMemo3(() => {
+    if (!props.sessionID)
+      return [];
+    return props.context.data.session.message.list(props.sessionID) ?? [];
+  });
+  const promptCount = createMemo3(() => {
+    const msgs = sessionMessages();
+    const userMsgs = msgs.filter((m) => m.type === "user" || m.type === "shell");
+    return userMsgs.length;
+  });
   const sessionCost = createMemo3(() => {
     if (!props.sessionID)
       return;
@@ -956,7 +975,7 @@ function PromptStatusBadgeContent(props) {
           "Prompts: ",
           /* @__PURE__ */ jsxDEV5("span", {
             style: { fg: theme().text.feedback.success.default },
-            children: String(session().counter)
+            children: String(promptCount())
           }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),

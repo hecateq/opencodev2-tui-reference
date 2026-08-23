@@ -58,6 +58,18 @@ function SidebarPanelContent(props: SidebarPanelProps) {
 
   const isRunning = createMemo(() => sessionStatus() === "running")
 
+  // Real-time user prompt count from session messages
+  const sessionMessages = createMemo(() => {
+    if (!props.sessionID) return []
+    return props.context.data.session.message.list(props.sessionID) ?? []
+  })
+
+  const promptCount = createMemo(() => {
+    const msgs = sessionMessages()
+    const userMsgs = msgs.filter((m) => m.type === "user" || m.type === "shell")
+    return userMsgs.length
+  })
+
   // Pulls cost from context; undefined if not entered / zero
   const sessionCost = createMemo(() => {
     if (!props.sessionID) return undefined
@@ -110,16 +122,15 @@ function SidebarPanelContent(props: SidebarPanelProps) {
             </text>
           </box>
 
-          {/* Session Prompts Row */}
+          {/* Session Prompts Row (Live Message Count) */}
           <box
             flexDirection="row"
             gap={1}
             minWidth={0}
             onMouseUp={() => {
-              props.sessionStore.incrementCounter(props.sessionID)
               props.context.ui.toast.show({
                 title: "Session Prompts",
-                message: `Prompts: ${session().counter}`,
+                message: `Total Prompts in Session: ${promptCount()}`,
                 variant: "info",
                 duration: 2000,
               })
@@ -132,7 +143,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
               <b>Prompts</b>
             </text>
             <text fg={theme.text.feedback.info.default} wrapMode="none" flexShrink={0}>
-              {session().counter}
+              {promptCount()}
             </text>
           </box>
 

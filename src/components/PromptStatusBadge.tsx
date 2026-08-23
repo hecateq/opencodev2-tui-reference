@@ -27,6 +27,18 @@ function PromptStatusBadgeContent(props: PromptStatusBadgeProps) {
 
   const isRunning = createMemo(() => sessionStatus() === "running")
 
+  // Real-time user prompt count from session messages
+  const sessionMessages = createMemo(() => {
+    if (!props.sessionID) return []
+    return props.context.data.session.message.list(props.sessionID) ?? []
+  })
+
+  const promptCount = createMemo(() => {
+    const msgs = sessionMessages()
+    const userMsgs = msgs.filter((m) => m.type === "user" || m.type === "shell")
+    return userMsgs.length
+  })
+
   // Pulls cost from context; undefined if not entered / zero
   const sessionCost = createMemo(() => {
     if (!props.sessionID) return undefined
@@ -70,9 +82,9 @@ function PromptStatusBadgeContent(props: PromptStatusBadgeProps) {
 
       <text fg={theme().text.subdued}>│</text>
 
-      {/* Reactive Prompts Count */}
+      {/* Real-time Prompts Count */}
       <text fg={theme().text.subdued}>
-        Prompts: <span style={{ fg: theme().text.feedback.success.default }}>{String(session().counter)}</span>
+        Prompts: <span style={{ fg: theme().text.feedback.success.default }}>{String(promptCount())}</span>
       </text>
 
       {/* Cost Badge - Only rendered if a non-zero cost is present in context */}
