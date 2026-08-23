@@ -613,14 +613,16 @@ function SidebarPanelContent(props) {
       /* @__PURE__ */ jsxDEV4("box", {
         flexDirection: "row",
         gap: 1,
-        onMouseDown: toggleHecateq,
+        onMouseUp: toggleHecateq,
         children: [
           /* @__PURE__ */ jsxDEV4("text", {
             fg: theme.text.default,
+            onMouseUp: toggleHecateq,
             children: isHecateqOpen() ? "▼" : "▶"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV4("text", {
             fg: theme.text.default,
+            onMouseUp: toggleHecateq,
             children: [
               /* @__PURE__ */ jsxDEV4("b", {
                 children: "Hecateq Lab"
@@ -681,7 +683,7 @@ function SidebarPanelContent(props) {
               flexDirection: "row",
               gap: 1,
               minWidth: 0,
-              onMouseDown: () => {
+              onMouseUp: () => {
                 props.sessionStore.incrementCounter(props.sessionID);
                 props.context.ui.toast.show({
                   title: "Session Counter",
@@ -751,7 +753,7 @@ function SidebarPanelContent(props) {
               flexDirection: "row",
               gap: 1,
               minWidth: 0,
-              onMouseDown: () => navigateToHctLab(props.context, "opencodev2-tui-reference"),
+              onMouseUp: () => navigateToHctLab(props.context, "opencodev2-tui-reference"),
               children: [
                 /* @__PURE__ */ jsxDEV4("text", {
                   flexShrink: 0,
@@ -778,14 +780,16 @@ function SidebarPanelContent(props) {
                 /* @__PURE__ */ jsxDEV4("box", {
                   flexDirection: "row",
                   gap: 1,
-                  onMouseDown: toggleSubagents,
+                  onMouseUp: toggleSubagents,
                   children: [
                     /* @__PURE__ */ jsxDEV4("text", {
                       fg: theme.text.default,
+                      onMouseUp: toggleSubagents,
                       children: isSubagentsOpen() ? "▼" : "▶"
                     }, undefined, false, undefined, this),
                     /* @__PURE__ */ jsxDEV4("text", {
                       fg: theme.text.default,
+                      onMouseUp: toggleSubagents,
                       children: [
                         /* @__PURE__ */ jsxDEV4("b", {
                           children: "Subagents"
@@ -834,7 +838,7 @@ function SidebarPanelContent(props) {
                               flexDirection: "row",
                               gap: 1,
                               minWidth: 0,
-                              onMouseDown: () => {
+                              onMouseUp: () => {
                                 props.context.ui.router.navigate({ type: "session", sessionID: node.session.id });
                               },
                               children: [
@@ -1073,21 +1077,40 @@ function Commands(props) {
         }
       },
       {
-        id: "hctlab.sidebar.toggle",
-        title: "Toggle HCTLab Sidebar Collapse",
-        description: "Toggles persistent collapsed state for the HCTLab sidebar panel",
+        id: "hctlab.hecateq.toggle",
+        title: "Toggle Hecateq Lab Accordion",
+        description: "Expands or collapses the Hecateq Lab sidebar panel",
         group: "HCTLab",
         palette: true,
         slash: {
-          name: "sidebar-toggle"
+          name: "hecateq-toggle"
         },
         run: async () => {
-          const isCollapsed = await props.prefsStore.toggleSidebar();
+          const isOpen = await props.prefsStore.toggleHecateqLab();
           props.context.ui.toast.show({
-            title: "Sidebar",
-            message: isCollapsed ? "HCTLab Sidebar Collapsed" : "HCTLab Sidebar Expanded",
+            title: "Hecateq Lab",
+            message: isOpen ? "Hecateq Lab Expanded" : "Hecateq Lab Collapsed",
             variant: "info",
-            duration: 2500
+            duration: 2000
+          });
+        }
+      },
+      {
+        id: "hctlab.subagents.toggle",
+        title: "Toggle Subagents Accordion",
+        description: "Expands or collapses the Subagents section under Hecateq Lab",
+        group: "HCTLab",
+        palette: true,
+        slash: {
+          name: "subagents-toggle"
+        },
+        run: async () => {
+          const isOpen = await props.prefsStore.toggleSubagents();
+          props.context.ui.toast.show({
+            title: "Subagents",
+            message: isOpen ? "Subagents Expanded" : "Subagents Collapsed",
+            variant: "info",
+            duration: 2000
           });
         }
       },

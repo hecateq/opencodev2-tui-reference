@@ -17,7 +17,7 @@ export interface SidebarPanelProps {
 function SidebarPanelContent(props: SidebarPanelProps) {
   const theme = props.context.theme
 
-  // Instantaneous reactive signals with background persistence
+  // Reactive collapsible state
   const [isHecateqOpen, setHecateqOpen] = createSignal(props.prefsStore.prefs.hecateqLabOpen ?? true)
   const [isSubagentsOpen, setSubagentsOpen] = createSignal(props.prefsStore.prefs.subagentsOpen ?? true)
 
@@ -83,14 +83,16 @@ function SidebarPanelContent(props: SidebarPanelProps) {
 
   return (
     <box marginTop={1}>
-      {/* Top-Level Header: Hecateq Lab (Collapsible like MCP) */}
+      {/* Top-Level Header: Hecateq Lab (Collapsible with onMouseUp & onMouseDown) */}
       <box
         flexDirection="row"
         gap={1}
-        onMouseDown={toggleHecateq}
+        onMouseUp={toggleHecateq}
       >
-        <text fg={theme.text.default}>{isHecateqOpen() ? "▼" : "▶"}</text>
-        <text fg={theme.text.default}>
+        <text fg={theme.text.default} onMouseUp={toggleHecateq}>
+          {isHecateqOpen() ? "▼" : "▶"}
+        </text>
+        <text fg={theme.text.default} onMouseUp={toggleHecateq}>
           <b>Hecateq Lab</b>
           <Show when={!isHecateqOpen()}>
             <span style={{ fg: theme.text.subdued }}>
@@ -126,7 +128,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
             flexDirection="row"
             gap={1}
             minWidth={0}
-            onMouseDown={() => {
+            onMouseUp={() => {
               props.sessionStore.incrementCounter(props.sessionID)
               props.context.ui.toast.show({
                 title: "Session Counter",
@@ -169,7 +171,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
             flexDirection="row"
             gap={1}
             minWidth={0}
-            onMouseDown={() => navigateToHctLab(props.context, "opencodev2-tui-reference")}
+            onMouseUp={() => navigateToHctLab(props.context, "opencodev2-tui-reference")}
           >
             <text flexShrink={0} style={{ fg: theme.text.feedback.info.default }}>
               •
@@ -184,10 +186,12 @@ function SidebarPanelContent(props: SidebarPanelProps) {
             <box
               flexDirection="row"
               gap={1}
-              onMouseDown={toggleSubagents}
+              onMouseUp={toggleSubagents}
             >
-              <text fg={theme.text.default}>{isSubagentsOpen() ? "▼" : "▶"}</text>
-              <text fg={theme.text.default}>
+              <text fg={theme.text.default} onMouseUp={toggleSubagents}>
+                {isSubagentsOpen() ? "▼" : "▶"}
+              </text>
+              <text fg={theme.text.default} onMouseUp={toggleSubagents}>
                 <b>Subagents</b>
                 <span style={{ fg: theme.text.subdued }}>
                   {" "}
@@ -223,7 +227,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
                           flexDirection="row"
                           gap={1}
                           minWidth={0}
-                          onMouseDown={() => {
+                          onMouseUp={() => {
                             props.context.ui.router.navigate({ type: "session", sessionID: node.session.id })
                           }}
                         >
