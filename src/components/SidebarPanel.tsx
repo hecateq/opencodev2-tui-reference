@@ -1,4 +1,4 @@
-import { createMemo, For, Show } from "solid-js"
+import { createMemo, createSignal, For, Show } from "solid-js"
 import type { Plugin } from "@opencode-ai/plugin/tui"
 import type { SessionMemoryStore } from "../state/session-store.js"
 import type { PersistentPrefsStore } from "../state/persistent-store.js"
@@ -17,7 +17,23 @@ export interface SidebarPanelProps {
 function SidebarPanelContent(props: SidebarPanelProps) {
   const theme = props.context.theme
 
-  // Active Session metrics & storage
+  // Instantaneous reactive signals with background persistence
+  const [isHecateqOpen, setHecateqOpen] = createSignal(props.prefsStore.prefs.hecateqLabOpen ?? true)
+  const [isSubagentsOpen, setSubagentsOpen] = createSignal(props.prefsStore.prefs.subagentsOpen ?? true)
+
+  const toggleHecateq = () => {
+    const next = !isHecateqOpen()
+    setHecateqOpen(next)
+    void props.prefsStore.toggleHecateqLab()
+  }
+
+  const toggleSubagents = () => {
+    const next = !isSubagentsOpen()
+    setSubagentsOpen(next)
+    void props.prefsStore.toggleSubagents()
+  }
+
+  // Active Session metrics
   const session = createMemo(() => {
     return (
       props.sessionStore.store.activeSessions[props.sessionID] ??
@@ -61,10 +77,6 @@ function SidebarPanelContent(props: SidebarPanelProps) {
     return formatCost(rawCost)
   })
 
-  // Persistent collapsible states
-  const isHecateqOpen = createMemo(() => props.prefsStore.prefs.hecateqLabOpen ?? true)
-  const isSubagentsOpen = createMemo(() => props.prefsStore.prefs.subagentsOpen ?? true)
-
   const dot = (running: boolean) => {
     return running ? theme.text.feedback.warning.default : theme.text.feedback.success.default
   }
@@ -75,7 +87,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
       <box
         flexDirection="row"
         gap={1}
-        onMouseDown={() => props.prefsStore.toggleHecateqLab()}
+        onMouseDown={toggleHecateq}
       >
         <text fg={theme.text.default}>{isHecateqOpen() ? "▼" : "▶"}</text>
         <text fg={theme.text.default}>
@@ -89,7 +101,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
         </text>
       </box>
 
-      {/* Expanded Hecateq Lab Section */}
+      {/* Expanded Hecateq Lab Content */}
       <Show when={isHecateqOpen()}>
         <box flexDirection="column">
           {/* Status Row */}
@@ -114,7 +126,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
             flexDirection="row"
             gap={1}
             minWidth={0}
-            onMouseUp={() => {
+            onMouseDown={() => {
               props.sessionStore.incrementCounter(props.sessionID)
               props.context.ui.toast.show({
                 title: "Session Counter",
@@ -157,7 +169,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
             flexDirection="row"
             gap={1}
             minWidth={0}
-            onMouseUp={() => navigateToHctLab(props.context, "opencodev2-tui-reference")}
+            onMouseDown={() => navigateToHctLab(props.context, "opencodev2-tui-reference")}
           >
             <text flexShrink={0} style={{ fg: theme.text.feedback.info.default }}>
               •
@@ -172,7 +184,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
             <box
               flexDirection="row"
               gap={1}
-              onMouseDown={() => props.prefsStore.toggleSubagents()}
+              onMouseDown={toggleSubagents}
             >
               <text fg={theme.text.default}>{isSubagentsOpen() ? "▼" : "▶"}</text>
               <text fg={theme.text.default}>
@@ -211,7 +223,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
                           flexDirection="row"
                           gap={1}
                           minWidth={0}
-                          onMouseUp={() => {
+                          onMouseDown={() => {
                             props.context.ui.router.navigate({ type: "session", sessionID: node.session.id })
                           }}
                         >

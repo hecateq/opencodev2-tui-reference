@@ -137,7 +137,7 @@ function createPersistentPrefsStore(storage) {
 }
 
 // src/components/SidebarPanel.tsx
-import { createMemo as createMemo2, For as For2, Show as Show2 } from "solid-js";
+import { createMemo as createMemo2, createSignal, For as For2, Show as Show2 } from "solid-js";
 
 // src/utils/format.ts
 function formatCost(cost) {
@@ -560,6 +560,18 @@ function navigateToHctLab(ctx, pluginId) {
 import { jsxDEV as jsxDEV4 } from "@opentui/solid/jsx-dev-runtime";
 function SidebarPanelContent(props) {
   const theme = props.context.theme;
+  const [isHecateqOpen, setHecateqOpen] = createSignal(props.prefsStore.prefs.hecateqLabOpen ?? true);
+  const [isSubagentsOpen, setSubagentsOpen] = createSignal(props.prefsStore.prefs.subagentsOpen ?? true);
+  const toggleHecateq = () => {
+    const next = !isHecateqOpen();
+    setHecateqOpen(next);
+    props.prefsStore.toggleHecateqLab();
+  };
+  const toggleSubagents = () => {
+    const next = !isSubagentsOpen();
+    setSubagentsOpen(next);
+    props.prefsStore.toggleSubagents();
+  };
   const session = createMemo2(() => {
     return props.sessionStore.store.activeSessions[props.sessionID] ?? props.sessionStore.ensureSession(props.sessionID);
   });
@@ -592,8 +604,6 @@ function SidebarPanelContent(props) {
     const rawCost = props.context.data.session.cost(props.sessionID);
     return formatCost(rawCost);
   });
-  const isHecateqOpen = createMemo2(() => props.prefsStore.prefs.hecateqLabOpen ?? true);
-  const isSubagentsOpen = createMemo2(() => props.prefsStore.prefs.subagentsOpen ?? true);
   const dot = (running) => {
     return running ? theme.text.feedback.warning.default : theme.text.feedback.success.default;
   };
@@ -603,7 +613,7 @@ function SidebarPanelContent(props) {
       /* @__PURE__ */ jsxDEV4("box", {
         flexDirection: "row",
         gap: 1,
-        onMouseDown: () => props.prefsStore.toggleHecateqLab(),
+        onMouseDown: toggleHecateq,
         children: [
           /* @__PURE__ */ jsxDEV4("text", {
             fg: theme.text.default,
@@ -671,7 +681,7 @@ function SidebarPanelContent(props) {
               flexDirection: "row",
               gap: 1,
               minWidth: 0,
-              onMouseUp: () => {
+              onMouseDown: () => {
                 props.sessionStore.incrementCounter(props.sessionID);
                 props.context.ui.toast.show({
                   title: "Session Counter",
@@ -741,7 +751,7 @@ function SidebarPanelContent(props) {
               flexDirection: "row",
               gap: 1,
               minWidth: 0,
-              onMouseUp: () => navigateToHctLab(props.context, "opencodev2-tui-reference"),
+              onMouseDown: () => navigateToHctLab(props.context, "opencodev2-tui-reference"),
               children: [
                 /* @__PURE__ */ jsxDEV4("text", {
                   flexShrink: 0,
@@ -768,7 +778,7 @@ function SidebarPanelContent(props) {
                 /* @__PURE__ */ jsxDEV4("box", {
                   flexDirection: "row",
                   gap: 1,
-                  onMouseDown: () => props.prefsStore.toggleSubagents(),
+                  onMouseDown: toggleSubagents,
                   children: [
                     /* @__PURE__ */ jsxDEV4("text", {
                       fg: theme.text.default,
@@ -824,7 +834,7 @@ function SidebarPanelContent(props) {
                               flexDirection: "row",
                               gap: 1,
                               minWidth: 0,
-                              onMouseUp: () => {
+                              onMouseDown: () => {
                                 props.context.ui.router.navigate({ type: "session", sessionID: node.session.id });
                               },
                               children: [
