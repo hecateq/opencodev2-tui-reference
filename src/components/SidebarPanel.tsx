@@ -21,15 +21,26 @@ function SidebarPanelContent(props: SidebarPanelProps) {
   const [isHecateqOpen, setHecateqOpen] = createSignal(props.prefsStore.prefs.hecateqLabOpen ?? true)
   const [isSubagentsOpen, setSubagentsOpen] = createSignal(props.prefsStore.prefs.subagentsOpen ?? true)
 
+  // Debounced toggles to prevent double-firing and jitter on clicks
+  let lastHecateqToggle = 0
   const toggleHecateq = (e?: any) => {
     e?.stopPropagation?.()
+    const now = Date.now()
+    if (now - lastHecateqToggle < 200) return
+    lastHecateqToggle = now
+
     const next = !isHecateqOpen()
     setHecateqOpen(next)
     void props.prefsStore.toggleHecateqLab()
   }
 
+  let lastSubagentsToggle = 0
   const toggleSubagents = (e?: any) => {
     e?.stopPropagation?.()
+    const now = Date.now()
+    if (now - lastSubagentsToggle < 200) return
+    lastSubagentsToggle = now
+
     const next = !isSubagentsOpen()
     setSubagentsOpen(next)
     void props.prefsStore.toggleSubagents()
@@ -90,9 +101,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
         flexDirection="row"
         gap={1}
         minWidth={0}
-        flexGrow={1}
         onMouseDown={toggleHecateq}
-        onMouseUp={toggleHecateq}
       >
         <text fg={theme.text.default}>
           {isHecateqOpen() ? "▼" : "▶"}
@@ -110,7 +119,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
 
       {/* Expanded Hecateq Lab Content */}
       <Show when={isHecateqOpen()}>
-        <box flexDirection="column" marginTop={0}>
+        <box flexDirection="column">
           {/* Status Row */}
           <box flexDirection="row" gap={1} minWidth={0}>
             <text flexShrink={0} style={{ fg: dot(isRunning()) }}>
@@ -192,9 +201,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
               flexDirection="row"
               gap={1}
               minWidth={0}
-              flexGrow={1}
               onMouseDown={toggleSubagents}
-              onMouseUp={toggleSubagents}
             >
               <text fg={theme.text.default}>
                 {isSubagentsOpen() ? "▼" : "▶"}

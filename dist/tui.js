@@ -562,14 +562,24 @@ function SidebarPanelContent(props) {
   const theme = props.context.theme;
   const [isHecateqOpen, setHecateqOpen] = createSignal(props.prefsStore.prefs.hecateqLabOpen ?? true);
   const [isSubagentsOpen, setSubagentsOpen] = createSignal(props.prefsStore.prefs.subagentsOpen ?? true);
+  let lastHecateqToggle = 0;
   const toggleHecateq = (e) => {
     e?.stopPropagation?.();
+    const now = Date.now();
+    if (now - lastHecateqToggle < 200)
+      return;
+    lastHecateqToggle = now;
     const next = !isHecateqOpen();
     setHecateqOpen(next);
     props.prefsStore.toggleHecateqLab();
   };
+  let lastSubagentsToggle = 0;
   const toggleSubagents = (e) => {
     e?.stopPropagation?.();
+    const now = Date.now();
+    if (now - lastSubagentsToggle < 200)
+      return;
+    lastSubagentsToggle = now;
     const next = !isSubagentsOpen();
     setSubagentsOpen(next);
     props.prefsStore.toggleSubagents();
@@ -617,9 +627,7 @@ function SidebarPanelContent(props) {
         flexDirection: "row",
         gap: 1,
         minWidth: 0,
-        flexGrow: 1,
         onMouseDown: toggleHecateq,
-        onMouseUp: toggleHecateq,
         children: [
           /* @__PURE__ */ jsxDEV4("text", {
             fg: theme.text.default,
@@ -653,7 +661,6 @@ function SidebarPanelContent(props) {
         when: isHecateqOpen(),
         children: /* @__PURE__ */ jsxDEV4("box", {
           flexDirection: "column",
-          marginTop: 0,
           children: [
             /* @__PURE__ */ jsxDEV4("box", {
               flexDirection: "row",
@@ -787,9 +794,7 @@ function SidebarPanelContent(props) {
                   flexDirection: "row",
                   gap: 1,
                   minWidth: 0,
-                  flexGrow: 1,
                   onMouseDown: toggleSubagents,
-                  onMouseUp: toggleSubagents,
                   children: [
                     /* @__PURE__ */ jsxDEV4("text", {
                       fg: theme.text.default,
