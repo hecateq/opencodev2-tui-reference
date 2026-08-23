@@ -562,12 +562,14 @@ function SidebarPanelContent(props) {
   const theme = props.context.theme;
   const [isHecateqOpen, setHecateqOpen] = createSignal(props.prefsStore.prefs.hecateqLabOpen ?? true);
   const [isSubagentsOpen, setSubagentsOpen] = createSignal(props.prefsStore.prefs.subagentsOpen ?? true);
-  const toggleHecateq = () => {
+  const toggleHecateq = (e) => {
+    e?.stopPropagation?.();
     const next = !isHecateqOpen();
     setHecateqOpen(next);
     props.prefsStore.toggleHecateqLab();
   };
-  const toggleSubagents = () => {
+  const toggleSubagents = (e) => {
+    e?.stopPropagation?.();
     const next = !isSubagentsOpen();
     setSubagentsOpen(next);
     props.prefsStore.toggleSubagents();
@@ -609,25 +611,22 @@ function SidebarPanelContent(props) {
   };
   return /* @__PURE__ */ jsxDEV4("box", {
     marginTop: 1,
+    flexDirection: "column",
     children: [
       /* @__PURE__ */ jsxDEV4("box", {
         flexDirection: "row",
         gap: 1,
+        minWidth: 0,
+        flexGrow: 1,
         onMouseDown: toggleHecateq,
         onMouseUp: toggleHecateq,
-        "on:mouse_down": toggleHecateq,
-        "on:mouse_up": toggleHecateq,
         children: [
           /* @__PURE__ */ jsxDEV4("text", {
             fg: theme.text.default,
-            onMouseDown: toggleHecateq,
-            onMouseUp: toggleHecateq,
             children: isHecateqOpen() ? "▼" : "▶"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV4("text", {
             fg: theme.text.default,
-            onMouseDown: toggleHecateq,
-            onMouseUp: toggleHecateq,
             children: [
               /* @__PURE__ */ jsxDEV4("b", {
                 children: "Hecateq Lab"
@@ -654,6 +653,7 @@ function SidebarPanelContent(props) {
         when: isHecateqOpen(),
         children: /* @__PURE__ */ jsxDEV4("box", {
           flexDirection: "column",
+          marginTop: 0,
           children: [
             /* @__PURE__ */ jsxDEV4("box", {
               flexDirection: "row",
@@ -696,9 +696,6 @@ function SidebarPanelContent(props) {
                   variant: "info",
                   duration: 2000
                 });
-              },
-              onMouseUp: () => {
-                props.sessionStore.incrementCounter(props.sessionID);
               },
               children: [
                 /* @__PURE__ */ jsxDEV4("text", {
@@ -762,7 +759,6 @@ function SidebarPanelContent(props) {
               gap: 1,
               minWidth: 0,
               onMouseDown: () => navigateToHctLab(props.context, "opencodev2-tui-reference"),
-              onMouseUp: () => navigateToHctLab(props.context, "opencodev2-tui-reference"),
               children: [
                 /* @__PURE__ */ jsxDEV4("text", {
                   flexShrink: 0,
@@ -785,25 +781,22 @@ function SidebarPanelContent(props) {
             /* @__PURE__ */ jsxDEV4("box", {
               marginTop: 1,
               paddingLeft: 1,
+              flexDirection: "column",
               children: [
                 /* @__PURE__ */ jsxDEV4("box", {
                   flexDirection: "row",
                   gap: 1,
+                  minWidth: 0,
+                  flexGrow: 1,
                   onMouseDown: toggleSubagents,
                   onMouseUp: toggleSubagents,
-                  "on:mouse_down": toggleSubagents,
-                  "on:mouse_up": toggleSubagents,
                   children: [
                     /* @__PURE__ */ jsxDEV4("text", {
                       fg: theme.text.default,
-                      onMouseDown: toggleSubagents,
-                      onMouseUp: toggleSubagents,
                       children: isSubagentsOpen() ? "▼" : "▶"
                     }, undefined, false, undefined, this),
                     /* @__PURE__ */ jsxDEV4("text", {
                       fg: theme.text.default,
-                      onMouseDown: toggleSubagents,
-                      onMouseUp: toggleSubagents,
                       children: [
                         /* @__PURE__ */ jsxDEV4("b", {
                           children: "Subagents"
@@ -853,9 +846,6 @@ function SidebarPanelContent(props) {
                               gap: 1,
                               minWidth: 0,
                               onMouseDown: () => {
-                                props.context.ui.router.navigate({ type: "session", sessionID: node.session.id });
-                              },
-                              onMouseUp: () => {
                                 props.context.ui.router.navigate({ type: "session", sessionID: node.session.id });
                               },
                               children: [

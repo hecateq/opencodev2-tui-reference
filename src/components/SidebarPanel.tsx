@@ -21,13 +21,15 @@ function SidebarPanelContent(props: SidebarPanelProps) {
   const [isHecateqOpen, setHecateqOpen] = createSignal(props.prefsStore.prefs.hecateqLabOpen ?? true)
   const [isSubagentsOpen, setSubagentsOpen] = createSignal(props.prefsStore.prefs.subagentsOpen ?? true)
 
-  const toggleHecateq = () => {
+  const toggleHecateq = (e?: any) => {
+    e?.stopPropagation?.()
     const next = !isHecateqOpen()
     setHecateqOpen(next)
     void props.prefsStore.toggleHecateqLab()
   }
 
-  const toggleSubagents = () => {
+  const toggleSubagents = (e?: any) => {
+    e?.stopPropagation?.()
     const next = !isSubagentsOpen()
     setSubagentsOpen(next)
     void props.prefsStore.toggleSubagents()
@@ -82,28 +84,20 @@ function SidebarPanelContent(props: SidebarPanelProps) {
   }
 
   return (
-    <box marginTop={1}>
+    <box marginTop={1} flexDirection="column">
       {/* Top-Level Header: Hecateq Lab */}
       <box
         flexDirection="row"
         gap={1}
+        minWidth={0}
+        flexGrow={1}
         onMouseDown={toggleHecateq}
         onMouseUp={toggleHecateq}
-        on:mouse_down={toggleHecateq}
-        on:mouse_up={toggleHecateq}
       >
-        <text
-          fg={theme.text.default}
-          onMouseDown={toggleHecateq}
-          onMouseUp={toggleHecateq}
-        >
+        <text fg={theme.text.default}>
           {isHecateqOpen() ? "▼" : "▶"}
         </text>
-        <text
-          fg={theme.text.default}
-          onMouseDown={toggleHecateq}
-          onMouseUp={toggleHecateq}
-        >
+        <text fg={theme.text.default}>
           <b>Hecateq Lab</b>
           <Show when={!isHecateqOpen()}>
             <span style={{ fg: theme.text.subdued }}>
@@ -116,7 +110,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
 
       {/* Expanded Hecateq Lab Content */}
       <Show when={isHecateqOpen()}>
-        <box flexDirection="column">
+        <box flexDirection="column" marginTop={0}>
           {/* Status Row */}
           <box flexDirection="row" gap={1} minWidth={0}>
             <text flexShrink={0} style={{ fg: dot(isRunning()) }}>
@@ -147,9 +141,6 @@ function SidebarPanelContent(props: SidebarPanelProps) {
                 variant: "info",
                 duration: 2000,
               })
-            }}
-            onMouseUp={() => {
-              props.sessionStore.incrementCounter(props.sessionID)
             }}
           >
             <text flexShrink={0} style={{ fg: theme.text.feedback.info.default }}>
@@ -186,7 +177,6 @@ function SidebarPanelContent(props: SidebarPanelProps) {
             gap={1}
             minWidth={0}
             onMouseDown={() => navigateToHctLab(props.context, "opencodev2-tui-reference")}
-            onMouseUp={() => navigateToHctLab(props.context, "opencodev2-tui-reference")}
           >
             <text flexShrink={0} style={{ fg: theme.text.feedback.info.default }}>
               •
@@ -197,27 +187,19 @@ function SidebarPanelContent(props: SidebarPanelProps) {
           </box>
 
           {/* Nested Subagents Section (Directly under Hecateq Lab) */}
-          <box marginTop={1} paddingLeft={1}>
+          <box marginTop={1} paddingLeft={1} flexDirection="column">
             <box
               flexDirection="row"
               gap={1}
+              minWidth={0}
+              flexGrow={1}
               onMouseDown={toggleSubagents}
               onMouseUp={toggleSubagents}
-              on:mouse_down={toggleSubagents}
-              on:mouse_up={toggleSubagents}
             >
-              <text
-                fg={theme.text.default}
-                onMouseDown={toggleSubagents}
-                onMouseUp={toggleSubagents}
-              >
+              <text fg={theme.text.default}>
                 {isSubagentsOpen() ? "▼" : "▶"}
               </text>
-              <text
-                fg={theme.text.default}
-                onMouseDown={toggleSubagents}
-                onMouseUp={toggleSubagents}
-              >
+              <text fg={theme.text.default}>
                 <b>Subagents</b>
                 <span style={{ fg: theme.text.subdued }}>
                   {" "}
@@ -254,9 +236,6 @@ function SidebarPanelContent(props: SidebarPanelProps) {
                           gap={1}
                           minWidth={0}
                           onMouseDown={() => {
-                            props.context.ui.router.navigate({ type: "session", sessionID: node.session.id })
-                          }}
-                          onMouseUp={() => {
                             props.context.ui.router.navigate({ type: "session", sessionID: node.session.id })
                           }}
                         >
