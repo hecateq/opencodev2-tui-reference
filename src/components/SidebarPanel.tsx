@@ -1,4 +1,4 @@
-import { createMemo, createSignal, For, Show } from "solid-js"
+import { createMemo, For, Show } from "solid-js"
 import type { Plugin } from "@opencode-ai/plugin/tui"
 import type { SessionMemoryStore } from "../state/session-store.js"
 import type { PersistentPrefsStore } from "../state/persistent-store.js"
@@ -17,34 +17,9 @@ export interface SidebarPanelProps {
 function SidebarPanelContent(props: SidebarPanelProps) {
   const theme = props.context.theme
 
-  // Reactive collapsible state
-  const [isHecateqOpen, setHecateqOpen] = createSignal(props.prefsStore.prefs.hecateqLabOpen ?? true)
-  const [isSubagentsOpen, setSubagentsOpen] = createSignal(props.prefsStore.prefs.subagentsOpen ?? true)
-
-  // Debounced toggles to prevent double-firing and jitter on clicks
-  let lastHecateqToggle = 0
-  const toggleHecateq = (e?: any) => {
-    e?.stopPropagation?.()
-    const now = Date.now()
-    if (now - lastHecateqToggle < 200) return
-    lastHecateqToggle = now
-
-    const next = !isHecateqOpen()
-    setHecateqOpen(next)
-    void props.prefsStore.toggleHecateqLab()
-  }
-
-  let lastSubagentsToggle = 0
-  const toggleSubagents = (e?: any) => {
-    e?.stopPropagation?.()
-    const now = Date.now()
-    if (now - lastSubagentsToggle < 200) return
-    lastSubagentsToggle = now
-
-    const next = !isSubagentsOpen()
-    setSubagentsOpen(next)
-    void props.prefsStore.toggleSubagents()
-  }
+  // Signals owned by the singleton store (preserves open state across tab switches, zero flicker)
+  const isHecateqOpen = props.prefsStore.hecateqLabOpen
+  const isSubagentsOpen = props.prefsStore.subagentsOpen
 
   // Active Session metrics
   const session = createMemo(() => {
@@ -95,17 +70,14 @@ function SidebarPanelContent(props: SidebarPanelProps) {
   }
 
   return (
-    <box marginTop={1} flexDirection="column">
+    <box marginTop={1}>
       {/* Top-Level Header: Hecateq Lab */}
       <box
         flexDirection="row"
         gap={1}
-        minWidth={0}
-        onMouseDown={toggleHecateq}
+        onMouseDown={() => props.prefsStore.toggleHecateqLab()}
       >
-        <text fg={theme.text.default}>
-          {isHecateqOpen() ? "▼" : "▶"}
-        </text>
+        <text fg={theme.text.default}>{isHecateqOpen() ? "▼" : "▶"}</text>
         <text fg={theme.text.default}>
           <b>Hecateq Lab</b>
           <Show when={!isHecateqOpen()}>
@@ -196,16 +168,13 @@ function SidebarPanelContent(props: SidebarPanelProps) {
           </box>
 
           {/* Nested Subagents Section (Directly under Hecateq Lab) */}
-          <box marginTop={1} paddingLeft={1} flexDirection="column">
+          <box marginTop={1} paddingLeft={1}>
             <box
               flexDirection="row"
               gap={1}
-              minWidth={0}
-              onMouseDown={toggleSubagents}
+              onMouseDown={() => props.prefsStore.toggleSubagents()}
             >
-              <text fg={theme.text.default}>
-                {isSubagentsOpen() ? "▼" : "▶"}
-              </text>
+              <text fg={theme.text.default}>{isSubagentsOpen() ? "▼" : "▶"}</text>
               <text fg={theme.text.default}>
                 <b>Subagents</b>
                 <span style={{ fg: theme.text.subdued }}>

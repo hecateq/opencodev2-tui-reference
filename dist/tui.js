@@ -78,66 +78,46 @@ function createSessionMemoryStore(storage) {
 }
 
 // src/state/persistent-store.ts
-var PERSISTENT_STORAGE_KEY = "hctlab_tui_persistent_prefs";
-var DEFAULT_PREFERENCES = {
-  sidebarCollapsed: false,
-  compactMode: false,
-  hecateqLabOpen: true,
-  subagentsOpen: true
-};
-function createPersistentPrefsStore(storage) {
-  const [prefs, mutatePrefs] = storage.store(PERSISTENT_STORAGE_KEY, {
-    initial: DEFAULT_PREFERENCES
-  });
-  async function toggleSidebar() {
-    let nextState = false;
-    await mutatePrefs((draft) => {
-      draft.sidebarCollapsed = !draft.sidebarCollapsed;
-      nextState = draft.sidebarCollapsed;
-    });
-    return nextState;
+import { createSignal } from "solid-js";
+function createPersistentPrefsStore(_storage) {
+  const [hecateqLabOpen, setHecateqLabOpen] = createSignal(true);
+  const [subagentsOpen, setSubagentsOpen] = createSignal(true);
+  const [sidebarCollapsed, setSidebarCollapsed] = createSignal(false);
+  const [compactMode, setCompactMode] = createSignal(false);
+  function toggleHecateqLab() {
+    const next = !hecateqLabOpen();
+    setHecateqLabOpen(next);
+    return next;
   }
-  async function toggleHecateqLab() {
-    let nextState = true;
-    await mutatePrefs((draft) => {
-      draft.hecateqLabOpen = draft.hecateqLabOpen !== undefined ? !draft.hecateqLabOpen : false;
-      nextState = draft.hecateqLabOpen;
-    });
-    return nextState;
+  function toggleSubagents() {
+    const next = !subagentsOpen();
+    setSubagentsOpen(next);
+    return next;
   }
-  async function toggleSubagents() {
-    let nextState = true;
-    await mutatePrefs((draft) => {
-      draft.subagentsOpen = draft.subagentsOpen !== undefined ? !draft.subagentsOpen : false;
-      nextState = draft.subagentsOpen;
-    });
-    return nextState;
+  function toggleSidebar() {
+    const next = !sidebarCollapsed();
+    setSidebarCollapsed(next);
+    return next;
   }
-  async function toggleCompactMode() {
-    let nextState = false;
-    await mutatePrefs((draft) => {
-      draft.compactMode = !draft.compactMode;
-      nextState = draft.compactMode;
-    });
-    return nextState;
-  }
-  async function setLastVisitedRoute(route) {
-    await mutatePrefs((draft) => {
-      draft.lastVisitedRoute = route;
-    });
+  function toggleCompactMode() {
+    const next = !compactMode();
+    setCompactMode(next);
+    return next;
   }
   return {
-    prefs,
+    hecateqLabOpen,
+    subagentsOpen,
+    sidebarCollapsed,
+    compactMode,
     toggleSidebar,
     toggleHecateqLab,
     toggleSubagents,
-    toggleCompactMode,
-    setLastVisitedRoute
+    toggleCompactMode
   };
 }
 
 // src/components/SidebarPanel.tsx
-import { createMemo as createMemo2, createSignal, For as For2, Show as Show2 } from "solid-js";
+import { createMemo as createMemo2, For as For2, Show as Show2 } from "solid-js";
 
 // src/utils/format.ts
 function formatCost(cost) {
@@ -560,30 +540,8 @@ function navigateToHctLab(ctx, pluginId) {
 import { jsxDEV as jsxDEV4 } from "@opentui/solid/jsx-dev-runtime";
 function SidebarPanelContent(props) {
   const theme = props.context.theme;
-  const [isHecateqOpen, setHecateqOpen] = createSignal(props.prefsStore.prefs.hecateqLabOpen ?? true);
-  const [isSubagentsOpen, setSubagentsOpen] = createSignal(props.prefsStore.prefs.subagentsOpen ?? true);
-  let lastHecateqToggle = 0;
-  const toggleHecateq = (e) => {
-    e?.stopPropagation?.();
-    const now = Date.now();
-    if (now - lastHecateqToggle < 200)
-      return;
-    lastHecateqToggle = now;
-    const next = !isHecateqOpen();
-    setHecateqOpen(next);
-    props.prefsStore.toggleHecateqLab();
-  };
-  let lastSubagentsToggle = 0;
-  const toggleSubagents = (e) => {
-    e?.stopPropagation?.();
-    const now = Date.now();
-    if (now - lastSubagentsToggle < 200)
-      return;
-    lastSubagentsToggle = now;
-    const next = !isSubagentsOpen();
-    setSubagentsOpen(next);
-    props.prefsStore.toggleSubagents();
-  };
+  const isHecateqOpen = props.prefsStore.hecateqLabOpen;
+  const isSubagentsOpen = props.prefsStore.subagentsOpen;
   const session = createMemo2(() => {
     return props.sessionStore.store.activeSessions[props.sessionID] ?? props.sessionStore.ensureSession(props.sessionID);
   });
@@ -621,13 +579,11 @@ function SidebarPanelContent(props) {
   };
   return /* @__PURE__ */ jsxDEV4("box", {
     marginTop: 1,
-    flexDirection: "column",
     children: [
       /* @__PURE__ */ jsxDEV4("box", {
         flexDirection: "row",
         gap: 1,
-        minWidth: 0,
-        onMouseDown: toggleHecateq,
+        onMouseDown: () => props.prefsStore.toggleHecateqLab(),
         children: [
           /* @__PURE__ */ jsxDEV4("text", {
             fg: theme.text.default,
@@ -788,13 +744,11 @@ function SidebarPanelContent(props) {
             /* @__PURE__ */ jsxDEV4("box", {
               marginTop: 1,
               paddingLeft: 1,
-              flexDirection: "column",
               children: [
                 /* @__PURE__ */ jsxDEV4("box", {
                   flexDirection: "row",
                   gap: 1,
-                  minWidth: 0,
-                  onMouseDown: toggleSubagents,
+                  onMouseDown: () => props.prefsStore.toggleSubagents(),
                   children: [
                     /* @__PURE__ */ jsxDEV4("text", {
                       fg: theme.text.default,

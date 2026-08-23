@@ -42,38 +42,24 @@ describe("State & Storage Isolation", () => {
     expect(store.store.activeSessions["session-beta"]?.eventCount).toBe(0)
   })
 
-  it("handles persistent preferences store and toggles", async () => {
-    let persistentState: any = {
-      sidebarCollapsed: false,
-      compactMode: false,
-      hecateqLabOpen: true,
-      subagentsOpen: true,
-    }
-
+  it("handles reactive preferences signals and synchronous toggles", () => {
     const mockStorage: any = {
       memory: () => [{}, () => {}],
-      store: (key: string, options: any) => {
-        return [
-          persistentState,
-          async (fn: (draft: any) => void) => {
-            fn(persistentState)
-          },
-        ]
-      },
+      store: () => [{}, async () => {}],
     }
 
     const store = createPersistentPrefsStore(mockStorage)
-    expect(store.prefs.hecateqLabOpen).toBe(true)
-    expect(store.prefs.subagentsOpen).toBe(true)
+    expect(store.hecateqLabOpen()).toBe(true)
+    expect(store.subagentsOpen()).toBe(true)
 
     // Toggle Hecateq Lab
-    const labOpen = await store.toggleHecateqLab()
+    const labOpen = store.toggleHecateqLab()
     expect(labOpen).toBe(false)
-    expect(store.prefs.hecateqLabOpen).toBe(false)
+    expect(store.hecateqLabOpen()).toBe(false)
 
     // Toggle Subagents
-    const subOpen = await store.toggleSubagents()
+    const subOpen = store.toggleSubagents()
     expect(subOpen).toBe(false)
-    expect(store.prefs.subagentsOpen).toBe(false)
+    expect(store.subagentsOpen()).toBe(false)
   })
 })

@@ -1,69 +1,47 @@
+import { createSignal } from "solid-js"
 import type { Plugin } from "@opencode-ai/plugin/tui"
 import type { PersistentPreferences } from "../types.js"
 
-const PERSISTENT_STORAGE_KEY = "hctlab_tui_persistent_prefs"
+export function createPersistentPrefsStore(_storage: Plugin.Context["storage"]) {
+  // Singleton in-memory reactive signals for rock-solid zero-jitter UI accordions
+  const [hecateqLabOpen, setHecateqLabOpen] = createSignal(true)
+  const [subagentsOpen, setSubagentsOpen] = createSignal(true)
+  const [sidebarCollapsed, setSidebarCollapsed] = createSignal(false)
+  const [compactMode, setCompactMode] = createSignal(false)
 
-const DEFAULT_PREFERENCES: PersistentPreferences = {
-  sidebarCollapsed: false,
-  compactMode: false,
-  hecateqLabOpen: true,
-  subagentsOpen: true,
-}
-
-export function createPersistentPrefsStore(storage: Plugin.Context["storage"]) {
-  const [prefs, mutatePrefs] = storage.store<PersistentPreferences>(PERSISTENT_STORAGE_KEY, {
-    initial: DEFAULT_PREFERENCES,
-  })
-
-  async function toggleSidebar(): Promise<boolean> {
-    let nextState = false
-    await mutatePrefs((draft: PersistentPreferences) => {
-      draft.sidebarCollapsed = !draft.sidebarCollapsed
-      nextState = draft.sidebarCollapsed
-    })
-    return nextState
+  function toggleHecateqLab(): boolean {
+    const next = !hecateqLabOpen()
+    setHecateqLabOpen(next)
+    return next
   }
 
-  async function toggleHecateqLab(): Promise<boolean> {
-    let nextState = true
-    await mutatePrefs((draft: PersistentPreferences) => {
-      draft.hecateqLabOpen = draft.hecateqLabOpen !== undefined ? !draft.hecateqLabOpen : false
-      nextState = draft.hecateqLabOpen
-    })
-    return nextState
+  function toggleSubagents(): boolean {
+    const next = !subagentsOpen()
+    setSubagentsOpen(next)
+    return next
   }
 
-  async function toggleSubagents(): Promise<boolean> {
-    let nextState = true
-    await mutatePrefs((draft: PersistentPreferences) => {
-      draft.subagentsOpen = draft.subagentsOpen !== undefined ? !draft.subagentsOpen : false
-      nextState = draft.subagentsOpen
-    })
-    return nextState
+  function toggleSidebar(): boolean {
+    const next = !sidebarCollapsed()
+    setSidebarCollapsed(next)
+    return next
   }
 
-  async function toggleCompactMode(): Promise<boolean> {
-    let nextState = false
-    await mutatePrefs((draft: PersistentPreferences) => {
-      draft.compactMode = !draft.compactMode
-      nextState = draft.compactMode
-    })
-    return nextState
-  }
-
-  async function setLastVisitedRoute(route: string): Promise<void> {
-    await mutatePrefs((draft: PersistentPreferences) => {
-      draft.lastVisitedRoute = route
-    })
+  function toggleCompactMode(): boolean {
+    const next = !compactMode()
+    setCompactMode(next)
+    return next
   }
 
   return {
-    prefs,
+    hecateqLabOpen,
+    subagentsOpen,
+    sidebarCollapsed,
+    compactMode,
     toggleSidebar,
     toggleHecateqLab,
     toggleSubagents,
     toggleCompactMode,
-    setLastVisitedRoute,
   }
 }
 
