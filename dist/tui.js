@@ -613,15 +613,20 @@ function SidebarPanelContent(props) {
       /* @__PURE__ */ jsxDEV4("box", {
         flexDirection: "row",
         gap: 1,
+        onMouseDown: toggleHecateq,
         onMouseUp: toggleHecateq,
+        "on:mouse_down": toggleHecateq,
+        "on:mouse_up": toggleHecateq,
         children: [
           /* @__PURE__ */ jsxDEV4("text", {
             fg: theme.text.default,
+            onMouseDown: toggleHecateq,
             onMouseUp: toggleHecateq,
             children: isHecateqOpen() ? "▼" : "▶"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsxDEV4("text", {
             fg: theme.text.default,
+            onMouseDown: toggleHecateq,
             onMouseUp: toggleHecateq,
             children: [
               /* @__PURE__ */ jsxDEV4("b", {
@@ -683,7 +688,7 @@ function SidebarPanelContent(props) {
               flexDirection: "row",
               gap: 1,
               minWidth: 0,
-              onMouseUp: () => {
+              onMouseDown: () => {
                 props.sessionStore.incrementCounter(props.sessionID);
                 props.context.ui.toast.show({
                   title: "Session Counter",
@@ -691,6 +696,9 @@ function SidebarPanelContent(props) {
                   variant: "info",
                   duration: 2000
                 });
+              },
+              onMouseUp: () => {
+                props.sessionStore.incrementCounter(props.sessionID);
               },
               children: [
                 /* @__PURE__ */ jsxDEV4("text", {
@@ -753,6 +761,7 @@ function SidebarPanelContent(props) {
               flexDirection: "row",
               gap: 1,
               minWidth: 0,
+              onMouseDown: () => navigateToHctLab(props.context, "opencodev2-tui-reference"),
               onMouseUp: () => navigateToHctLab(props.context, "opencodev2-tui-reference"),
               children: [
                 /* @__PURE__ */ jsxDEV4("text", {
@@ -780,15 +789,20 @@ function SidebarPanelContent(props) {
                 /* @__PURE__ */ jsxDEV4("box", {
                   flexDirection: "row",
                   gap: 1,
+                  onMouseDown: toggleSubagents,
                   onMouseUp: toggleSubagents,
+                  "on:mouse_down": toggleSubagents,
+                  "on:mouse_up": toggleSubagents,
                   children: [
                     /* @__PURE__ */ jsxDEV4("text", {
                       fg: theme.text.default,
+                      onMouseDown: toggleSubagents,
                       onMouseUp: toggleSubagents,
                       children: isSubagentsOpen() ? "▼" : "▶"
                     }, undefined, false, undefined, this),
                     /* @__PURE__ */ jsxDEV4("text", {
                       fg: theme.text.default,
+                      onMouseDown: toggleSubagents,
                       onMouseUp: toggleSubagents,
                       children: [
                         /* @__PURE__ */ jsxDEV4("b", {
@@ -838,6 +852,9 @@ function SidebarPanelContent(props) {
                               flexDirection: "row",
                               gap: 1,
                               minWidth: 0,
+                              onMouseDown: () => {
+                                props.context.ui.router.navigate({ type: "session", sessionID: node.session.id });
+                              },
                               onMouseUp: () => {
                                 props.context.ui.router.navigate({ type: "session", sessionID: node.session.id });
                               },

@@ -83,16 +83,27 @@ function SidebarPanelContent(props: SidebarPanelProps) {
 
   return (
     <box marginTop={1}>
-      {/* Top-Level Header: Hecateq Lab (Collapsible with onMouseUp & onMouseDown) */}
+      {/* Top-Level Header: Hecateq Lab */}
       <box
         flexDirection="row"
         gap={1}
+        onMouseDown={toggleHecateq}
         onMouseUp={toggleHecateq}
+        on:mouse_down={toggleHecateq}
+        on:mouse_up={toggleHecateq}
       >
-        <text fg={theme.text.default} onMouseUp={toggleHecateq}>
+        <text
+          fg={theme.text.default}
+          onMouseDown={toggleHecateq}
+          onMouseUp={toggleHecateq}
+        >
           {isHecateqOpen() ? "▼" : "▶"}
         </text>
-        <text fg={theme.text.default} onMouseUp={toggleHecateq}>
+        <text
+          fg={theme.text.default}
+          onMouseDown={toggleHecateq}
+          onMouseUp={toggleHecateq}
+        >
           <b>Hecateq Lab</b>
           <Show when={!isHecateqOpen()}>
             <span style={{ fg: theme.text.subdued }}>
@@ -128,7 +139,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
             flexDirection="row"
             gap={1}
             minWidth={0}
-            onMouseUp={() => {
+            onMouseDown={() => {
               props.sessionStore.incrementCounter(props.sessionID)
               props.context.ui.toast.show({
                 title: "Session Counter",
@@ -136,6 +147,9 @@ function SidebarPanelContent(props: SidebarPanelProps) {
                 variant: "info",
                 duration: 2000,
               })
+            }}
+            onMouseUp={() => {
+              props.sessionStore.incrementCounter(props.sessionID)
             }}
           >
             <text flexShrink={0} style={{ fg: theme.text.feedback.info.default }}>
@@ -171,6 +185,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
             flexDirection="row"
             gap={1}
             minWidth={0}
+            onMouseDown={() => navigateToHctLab(props.context, "opencodev2-tui-reference")}
             onMouseUp={() => navigateToHctLab(props.context, "opencodev2-tui-reference")}
           >
             <text flexShrink={0} style={{ fg: theme.text.feedback.info.default }}>
@@ -186,12 +201,23 @@ function SidebarPanelContent(props: SidebarPanelProps) {
             <box
               flexDirection="row"
               gap={1}
+              onMouseDown={toggleSubagents}
               onMouseUp={toggleSubagents}
+              on:mouse_down={toggleSubagents}
+              on:mouse_up={toggleSubagents}
             >
-              <text fg={theme.text.default} onMouseUp={toggleSubagents}>
+              <text
+                fg={theme.text.default}
+                onMouseDown={toggleSubagents}
+                onMouseUp={toggleSubagents}
+              >
                 {isSubagentsOpen() ? "▼" : "▶"}
               </text>
-              <text fg={theme.text.default} onMouseUp={toggleSubagents}>
+              <text
+                fg={theme.text.default}
+                onMouseDown={toggleSubagents}
+                onMouseUp={toggleSubagents}
+              >
                 <b>Subagents</b>
                 <span style={{ fg: theme.text.subdued }}>
                   {" "}
@@ -227,6 +253,9 @@ function SidebarPanelContent(props: SidebarPanelProps) {
                           flexDirection="row"
                           gap={1}
                           minWidth={0}
+                          onMouseDown={() => {
+                            props.context.ui.router.navigate({ type: "session", sessionID: node.session.id })
+                          }}
                           onMouseUp={() => {
                             props.context.ui.router.navigate({ type: "session", sessionID: node.session.id })
                           }}
