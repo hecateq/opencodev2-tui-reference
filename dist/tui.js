@@ -583,7 +583,8 @@ function SidebarPanelContent(props) {
       /* @__PURE__ */ jsxDEV4("box", {
         flexDirection: "row",
         gap: 1,
-        onMouseDown: () => props.prefsStore.toggleHecateqLab(),
+        minWidth: 0,
+        onMouseUp: () => props.prefsStore.toggleHecateqLab(),
         children: [
           /* @__PURE__ */ jsxDEV4("text", {
             fg: theme.text.default,
@@ -651,7 +652,7 @@ function SidebarPanelContent(props) {
               flexDirection: "row",
               gap: 1,
               minWidth: 0,
-              onMouseDown: () => {
+              onMouseUp: () => {
                 props.sessionStore.incrementCounter(props.sessionID);
                 props.context.ui.toast.show({
                   title: "Session Counter",
@@ -721,7 +722,7 @@ function SidebarPanelContent(props) {
               flexDirection: "row",
               gap: 1,
               minWidth: 0,
-              onMouseDown: () => navigateToHctLab(props.context, "opencodev2-tui-reference"),
+              onMouseUp: () => navigateToHctLab(props.context, "opencodev2-tui-reference"),
               children: [
                 /* @__PURE__ */ jsxDEV4("text", {
                   flexShrink: 0,
@@ -748,7 +749,8 @@ function SidebarPanelContent(props) {
                 /* @__PURE__ */ jsxDEV4("box", {
                   flexDirection: "row",
                   gap: 1,
-                  onMouseDown: () => props.prefsStore.toggleSubagents(),
+                  minWidth: 0,
+                  onMouseUp: () => props.prefsStore.toggleSubagents(),
                   children: [
                     /* @__PURE__ */ jsxDEV4("text", {
                       fg: theme.text.default,
@@ -804,7 +806,7 @@ function SidebarPanelContent(props) {
                               flexDirection: "row",
                               gap: 1,
                               minWidth: 0,
-                              onMouseDown: () => {
+                              onMouseUp: () => {
                                 props.context.ui.router.navigate({ type: "session", sessionID: node.session.id });
                               },
                               children: [

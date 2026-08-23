@@ -71,11 +71,12 @@ function SidebarPanelContent(props: SidebarPanelProps) {
 
   return (
     <box marginTop={1}>
-      {/* Top-Level Header: Hecateq Lab */}
+      {/* Top-Level Header: Hecateq Lab (Toggled on click release via onMouseUp) */}
       <box
         flexDirection="row"
         gap={1}
-        onMouseDown={() => props.prefsStore.toggleHecateqLab()}
+        minWidth={0}
+        onMouseUp={() => props.prefsStore.toggleHecateqLab()}
       >
         <text fg={theme.text.default}>{isHecateqOpen() ? "▼" : "▶"}</text>
         <text fg={theme.text.default}>
@@ -114,7 +115,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
             flexDirection="row"
             gap={1}
             minWidth={0}
-            onMouseDown={() => {
+            onMouseUp={() => {
               props.sessionStore.incrementCounter(props.sessionID)
               props.context.ui.toast.show({
                 title: "Session Counter",
@@ -157,7 +158,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
             flexDirection="row"
             gap={1}
             minWidth={0}
-            onMouseDown={() => navigateToHctLab(props.context, "opencodev2-tui-reference")}
+            onMouseUp={() => navigateToHctLab(props.context, "opencodev2-tui-reference")}
           >
             <text flexShrink={0} style={{ fg: theme.text.feedback.info.default }}>
               •
@@ -172,7 +173,8 @@ function SidebarPanelContent(props: SidebarPanelProps) {
             <box
               flexDirection="row"
               gap={1}
-              onMouseDown={() => props.prefsStore.toggleSubagents()}
+              minWidth={0}
+              onMouseUp={() => props.prefsStore.toggleSubagents()}
             >
               <text fg={theme.text.default}>{isSubagentsOpen() ? "▼" : "▶"}</text>
               <text fg={theme.text.default}>
@@ -211,7 +213,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
                           flexDirection="row"
                           gap={1}
                           minWidth={0}
-                          onMouseDown={() => {
+                          onMouseUp={() => {
                             props.context.ui.router.navigate({ type: "session", sessionID: node.session.id })
                           }}
                         >
