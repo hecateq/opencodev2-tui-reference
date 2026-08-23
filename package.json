@@ -1,0 +1,40 @@
+{
+  "name": "opencodev2-tui-denemee",
+  "version": "0.1.0",
+  "description": "OpenCode v2 TUI Assistant & Status Widget Plugin",
+  "type": "module",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./tui": {
+      "import": "./dist/tui.js",
+      "types": "./src/tui.tsx",
+      "default": "./dist/tui.js"
+    }
+  },
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./dist --target node --external @opencode-ai/* && bun build ./src/tui.tsx --outdir ./dist --target node --external @opencode-ai/* --external @opentui/* --external solid-js --external solid-js/*",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "peerDependencies": {
+    "@opencode-ai/plugin": "beta",
+    "@opencode-ai/theme": "beta",
+    "@opentui/core": "^0.5.6",
+    "@opentui/solid": "^0.5.6",
+    "solid-js": "^1.9.0"
+  },
+  "devDependencies": {
+    "@opencode-ai/plugin": "beta",
+    "@opencode-ai/theme": "beta",
+    "@opentui/core": "^0.5.6",
+    "@opentui/solid": "^0.5.6",
+    "@types/node": "^22.0.0",
+    "solid-js": "^1.9.0",
+    "typescript": "^5.8.0"
+  }
+}
