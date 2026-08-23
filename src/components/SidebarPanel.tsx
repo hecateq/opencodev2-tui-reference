@@ -110,7 +110,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
             </text>
           </box>
 
-          {/* Session Counter Row */}
+          {/* Session Prompts Row */}
           <box
             flexDirection="row"
             gap={1}
@@ -118,8 +118,8 @@ function SidebarPanelContent(props: SidebarPanelProps) {
             onMouseUp={() => {
               props.sessionStore.incrementCounter(props.sessionID)
               props.context.ui.toast.show({
-                title: "Session Counter",
-                message: `Counter: ${session().counter}`,
+                title: "Session Prompts",
+                message: `Prompts: ${session().counter}`,
                 variant: "info",
                 duration: 2000,
               })
@@ -129,7 +129,7 @@ function SidebarPanelContent(props: SidebarPanelProps) {
               •
             </text>
             <text fg={theme.text.default} wrapMode="none" truncate flexGrow={1} flexShrink={1} minWidth={0}>
-              <b>Counter</b>
+              <b>Prompts</b>
             </text>
             <text fg={theme.text.feedback.info.default} wrapMode="none" flexShrink={0}>
               {session().counter}

@@ -192,7 +192,7 @@ function HctLabPageContent(props: HctLabPageProps) {
                 • {truncateText(item.sessionID, 20)}:
               </text>
               <text fg={theme().text.feedback.info.default}>
-                Counter={item.counter}
+                Prompts={item.counter}
               </text>
               <text fg={theme().text.subdued}>
                 Events={item.eventCount}

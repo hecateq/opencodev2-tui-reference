@@ -70,9 +70,9 @@ function PromptStatusBadgeContent(props: PromptStatusBadgeProps) {
 
       <text fg={theme().text.subdued}>│</text>
 
-      {/* Reactive Counter */}
+      {/* Reactive Prompts Count */}
       <text fg={theme().text.subdued}>
-        Count: <span style={{ fg: theme().text.feedback.success.default }}>{String(session().counter)}</span>
+        Prompts: <span style={{ fg: theme().text.feedback.success.default }}>{String(session().counter)}</span>
       </text>
 
       {/* Cost Badge - Only rendered if a non-zero cost is present in context */}

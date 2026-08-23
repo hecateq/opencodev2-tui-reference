@@ -74,8 +74,8 @@ export function Commands(props: CommandsProps) {
       },
       {
         id: "hctlab.session.increment",
-        title: "Increment Session Counter",
-        description: "Increments the reactive counter for the current session",
+        title: "Increment Session Prompts",
+        description: "Increments the reactive prompt counter for the current session",
         group: "HCTLab",
         palette: true,
         slash: {
@@ -88,8 +88,8 @@ export function Commands(props: CommandsProps) {
 
           const session = props.sessionStore.ensureSession(activeSessionID)
           props.context.ui.toast.show({
-            title: "Session Counter",
-            message: `Counter updated: ${session.counter} (Session: ${activeSessionID})`,
+            title: "Session Prompts",
+            message: `Prompts updated: ${session.counter} (Session: ${activeSessionID})`,
             variant: "success",
             duration: 2500,
           })

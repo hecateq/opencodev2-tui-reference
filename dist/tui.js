@@ -445,7 +445,7 @@ function HctLabPageContent(props) {
                 /* @__PURE__ */ jsxDEV2("text", {
                   fg: theme().text.feedback.info.default,
                   children: [
-                    "Counter=",
+                    "Prompts=",
                     item.counter
                   ]
                 }, undefined, true, undefined, this),
@@ -655,8 +655,8 @@ function SidebarPanelContent(props) {
               onMouseUp: () => {
                 props.sessionStore.incrementCounter(props.sessionID);
                 props.context.ui.toast.show({
-                  title: "Session Counter",
-                  message: `Counter: ${session().counter}`,
+                  title: "Session Prompts",
+                  message: `Prompts: ${session().counter}`,
                   variant: "info",
                   duration: 2000
                 });
@@ -675,7 +675,7 @@ function SidebarPanelContent(props) {
                   flexShrink: 1,
                   minWidth: 0,
                   children: /* @__PURE__ */ jsxDEV4("b", {
-                    children: "Counter"
+                    children: "Prompts"
                   }, undefined, false, undefined, this)
                 }, undefined, false, undefined, this),
                 /* @__PURE__ */ jsxDEV4("text", {
@@ -953,7 +953,7 @@ function PromptStatusBadgeContent(props) {
       /* @__PURE__ */ jsxDEV5("text", {
         fg: theme().text.subdued,
         children: [
-          "Count: ",
+          "Prompts: ",
           /* @__PURE__ */ jsxDEV5("span", {
             style: { fg: theme().text.feedback.success.default },
             children: String(session().counter)
@@ -1084,8 +1084,8 @@ function Commands(props) {
       },
       {
         id: "hctlab.session.increment",
-        title: "Increment Session Counter",
-        description: "Increments the reactive counter for the current session",
+        title: "Increment Session Prompts",
+        description: "Increments the reactive prompt counter for the current session",
         group: "HCTLab",
         palette: true,
         slash: {
@@ -1097,8 +1097,8 @@ function Commands(props) {
           props.sessionStore.incrementCounter(activeSessionID);
           const session = props.sessionStore.ensureSession(activeSessionID);
           props.context.ui.toast.show({
-            title: "Session Counter",
-            message: `Counter updated: ${session.counter} (Session: ${activeSessionID})`,
+            title: "Session Prompts",
+            message: `Prompts updated: ${session.counter} (Session: ${activeSessionID})`,
             variant: "success",
             duration: 2500
           });
